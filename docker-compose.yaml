@@ -1,0 +1,27 @@
+version: "3.3"
+services:
+  csvserver:
+    environment:
+      CSVSERVER_BORDER: Orange
+    image: "infracloudio/csvserver:latest"
+    container_name: csveserver
+    ports:
+      - "9393:9300"
+    restart: always
+    volumes:
+      - type: "bind"
+        source: ./inputFile
+        target: /csvserver/inputdata
+
+  prometheus:
+    image: prom/prometheus:v2.22.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+    volumes:
+      - type: "bind"
+        source: ./prometheus.yaml
+        target: /etc/prometheus/prometheus.yml
+    depends_on:
+      - csvserver
